@@ -7,10 +7,7 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
 
-  modules: [
-    "@nuxt/eslint",
-    "@nuxt/icon",
-  ],
+  modules: ["@nuxt/eslint", "@nuxt/icon", "@nuxtjs/color-mode"],
 
   eslint: {
     config: {
@@ -21,4 +18,5 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  colorMode: { dataValue: "theme" },
 });
