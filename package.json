@@ -20,7 +20,8 @@
     "nuxt": "^3.17.1",
     "tailwindcss": "^4.1.5",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "zod": "^3.24.3"
   },
   "packageManager": "pnpm@9.13.2+sha1.969cc200a41db98449afee1bfa7578b3ce6ff330",
   "devDependencies": {
