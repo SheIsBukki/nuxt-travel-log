@@ -67,7 +67,7 @@ export default withNuxt(
     ignores: [
       "**/fixtures", // This is not in the tutorial but is in the plugin code
       ".pnpm-store/**", // I added this because it is in the tutorial
-      "**/migrations/*", // I added this because it is in the tutorial
+      "**/migrations/*", // I added this because it is in the tutorial——it ignores the migrations folder
       // ...globs
     ],
   }),
