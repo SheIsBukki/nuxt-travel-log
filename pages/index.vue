@@ -10,11 +10,12 @@
           app. Add locations, photos, and notes to create a digital journal of
           your journeys.
         </p>
-        <button class="btn btn-accent">
+        <AuthButton />
+        <!-- <button class="btn btn-accent">
           Sign In With GitHub
 
           <Icon name="tabler:brand-github" size="24" />
-        </button>
+        </button> -->
       </div>
     </div>
   </div>
