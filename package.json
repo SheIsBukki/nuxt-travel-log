@@ -30,7 +30,7 @@
     "vue-router": "^4.5.1",
     "zod": "^3.24.3"
   },
-  "packageManager": "pnpm@9.13.2+sha1.969cc200a41db98449afee1bfa7578b3ce6ff330",
+  "packageManager": "pnpm@10.10.0",
   "devDependencies": {
     "@antfu/eslint-config": "^4.12.0",
     "@iconify-json/tabler": "^1.2.17",
