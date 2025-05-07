@@ -18,15 +18,29 @@ export const useAuthStore = defineStore("useAuthStore", () => {
   const loading = computed(() => session.value?.isPending);
 
   async function signIn() {
+    // CSRF Protection
+    const { csrf } = useCsrf();
+    const headers = new Headers();
+    headers.append("csrf-token", csrf);
+
     await authClient.signIn.social({
       provider: "github",
       callbackURL: "/dashboard",
       errorCallbackURL: "/error",
+
+      fetchOptions: { headers },
     });
   }
 
   async function signOut() {
-    await authClient.signOut();
+    // CSRF Protection
+    const { csrf } = useCsrf();
+    const headers = new Headers();
+    headers.append("csrf-token", csrf);
+
+    await authClient.signOut(
+      { fetchOptions: { headers } },
+    );
     navigateTo("/");
   }
 
