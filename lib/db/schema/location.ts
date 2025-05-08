@@ -1,3 +1,5 @@
+import type { z } from "zod";
+
 import { int, real, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 
@@ -39,3 +41,5 @@ export const InsertLocation = createInsertSchema(location, {
   createdAt: true,
   updatedAt: true,
 });
+
+export type InsertLocation = z.infer<typeof InsertLocation>;
