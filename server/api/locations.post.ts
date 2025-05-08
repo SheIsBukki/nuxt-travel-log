@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
   if (existingLocation) {
     return sendError(event, createError({
       statusCode: 409,
-      statusMessage: "You have already created a location with the same name!",
+      statusMessage: "You have already created a location with the same name",
     }));
   }
 
