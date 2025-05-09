@@ -3,16 +3,24 @@ import type { FetchError } from "ofetch";
 
 import { toTypedSchema } from "@vee-validate/zod";
 
+import { CENTRE_NIGERIA } from "~/lib/constants";
 import { InsertLocation } from "~/lib/db/schema";
 
 const { $csrfFetch } = useNuxtApp();
 const router = useRouter();
+const mapStore = useMapStore();
 const loading = ref(false);
 const submitted = ref(false);
 const submitError = ref("");
 
-const { handleSubmit, errors, meta, setErrors } = useForm({
+const { handleSubmit, errors, meta, setErrors, setFieldValue, controlledValues } = useForm({
   validationSchema: toTypedSchema(InsertLocation),
+  initialValues: {
+    name: "",
+    description: "",
+    latitude: (CENTRE_NIGERIA as [number, number])[0],
+    longitude: (CENTRE_NIGERIA as [number, number])[1],
+  },
 });
 
 const onSubmit = handleSubmit(async (values) => {
@@ -42,6 +50,29 @@ const onSubmit = handleSubmit(async (values) => {
   loading.value = false;
 });
 
+function formatNumber(value?: number) {
+  if (!value)
+    return 0;
+  return value.toFixed(5);
+}
+
+effect(() => {
+  if (mapStore.addedPoint) {
+    setFieldValue("longitude", mapStore.addedPoint.longitude);
+    setFieldValue("latitude", mapStore.addedPoint.latitude);
+  }
+});
+
+onMounted(() => {
+  mapStore.addedPoint = {
+    id: 1,
+    name: "Added Point",
+    description: "",
+    latitude: (CENTRE_NIGERIA as [number, number])[0],
+    longitude: (CENTRE_NIGERIA as [number, number])[1],
+  };
+});
+
 onBeforeRouteLeave(() => {
   if (!submitted.value && meta.value.dirty) {
     // eslint-disable-next-line no-alert
@@ -50,12 +81,14 @@ onBeforeRouteLeave(() => {
       return false;
     }
   }
+  mapStore.addedPoint = null;
+
   return true;
 });
 </script>
 
 <template>
-  <div class="container max-w-md mx-auto">
+  <div class="container max-w-md mx-auto p-4">
     <div class="my-4">
       <h1 class="text-lg">
         Add Location
@@ -95,56 +128,17 @@ onBeforeRouteLeave(() => {
         :error="errors.description"
       />
 
-      <!-- Latitude -->
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">
-          Latitude
-        </legend>
+      <p>
+        Drag the <Icon
+          name="tabler:map-pin-filled"
+          size="18"
+          class="text-warning"
+        /> marker to your desired location. Or double click on the map
+      </p>
 
-        <Field
-          :disabled="loading"
-          name="latitude"
-          type="number"
-          class="input w-full"
-          :class="{ 'input-error': errors.latitude }"
-        />
-        <p v-if="errors.latitude" class="label text-error">
-          {{ errors.latitude }}
-        </p>
-      </fieldset>
-
-      <!-- Longitude -->
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">
-          Longitude
-        </legend>
-
-        <Field
-          :disabled="loading"
-          name="longitude"
-          type="number"
-          class="input w-full"
-          :class="{ 'input-error': errors.longitude }"
-        />
-        <p v-if="errors.longitude" class="label text-error">
-          {{ errors.longitude }}
-        </p>
-      </fieldset>
-
-      <!--      These two work but complain because of the type conflict from the props... -->
-      <!-- <AppFormField
-        :disabled="loading"
-        name="latitude"
-        label="Latitude"
-        :error="errors.latitude"
-      /> -->
-
-      <!-- <AppFormField
-        :disabled="loading"
-        name="longitude"
-        label="Longitude"
-        :error="errors.longitude"
-      /> -->
+      <p class="text-xs text-gray-400">
+        Current location: {{ formatNumber(controlledValues.latitude) }}, {{ formatNumber(controlledValues.longitude) }}
+      </p>
 
       <!-- Submit and cancel buttons -->
       <div class="flex justify-end gap-2">
