@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CENTER_NIGERIA } from "~/lib/constants";
+import { CENTRE_NIGERIA } from "~/lib/constants";
 
 const colorMode = useColorMode();
 // const style = "https://tiles.openfreemap.org/styles/liberty";
@@ -18,7 +18,7 @@ onMounted(() => {
 <template>
   <MglMap
     :map-style="style"
-    :center="CENTER_NIGERIA"
+    :center="CENTRE_NIGERIA"
     :zoom="zoom"
   >
     <MglNavigationControl />
@@ -28,19 +28,29 @@ onMounted(() => {
       :coordinates="[point.longitude, point.latitude]"
     >
       <template #marker>
-        <div class="tooltip tooltip-top">
-          <div class="tooltip-content">
-            <div class="animate-bounce text-2xl">
-              {{ point.label }}
-            </div>
-          </div>
+        <div
+          :data-tip="point.name"
+          class="tooltip tooltip-top hover:cursor-pointer"
+          :class="{ 'tooltip-open': mapStore.selectedPoint === point }"
+          @mouseenter="mapStore.selectPointWithoutFlyTo(point)"
+          @mouseleave="mapStore.selectPointWithoutFlyTo(null)"
+        >
           <Icon
             name="tabler:map-pin-filled"
             size="30"
-            class="text-secondary"
+            :class="mapStore.selectedPoint === point ? 'text-accent' : 'text-secondary'"
           />
         </div>
       </template>
+
+      <MglPopup class="">
+        <h3 class="text-xl">
+          {{ point.name }}
+        </h3>
+        <p v-if="point.description">
+          {{ point.description }}
+        </p>
+      </MglPopup>
     </MglMarker>
   </MglMap>
 </template>

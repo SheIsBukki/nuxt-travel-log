@@ -3,6 +3,7 @@ const isSidebarOpen = ref(true);
 const route = useRoute();
 const sidebarStore = useSidebarStore();
 const locationsStore = useLocationStore();
+const mapStore = useMapStore();
 
 onMounted(() => {
   isSidebarOpen.value = localStorage.getItem("isSidebarOpen") === "true";
@@ -74,19 +75,26 @@ function toggleSidebar() {
           :label="item.label"
           :icon="item.icon"
           :href="item.href"
+
+          :icon-colour="mapStore.selectedPoint === item.location ? 'text-accent' : undefined"
+          @mouseenter="mapStore.selectedPoint = item.location ?? null"
+          @mouseleave="mapStore.selectedPoint = null"
         />
 
         <!-- The instructor thinks we have to wrap this SidebarButton above in a wrapper, using this div element to use the v-else on an element that uses v-for. when he did, there was an additional padding in the location list section so he decided to use a v-if with the negative loading check -->
         <!-- <div v-if="!sidebarStore.loading && sidebarStore.sidebarItems.length" class="flex flex-col">
-        <SidebarButton
-          v-for="item in sidebarStore.sidebarItems"
+          <SidebarButton
+            v-for="item in sidebarStore.sidebarItems"
+            :key="item.id"
+            :show-label="isSidebarOpen"
+            :label="item.label"
+            :icon="item.icon"
+            :href="item.href"
 
-          :key="item.id"
-          :show-label="isSidebarOpen"
-          :label="item.label"
-          :icon="item.icon"
-          :href="item.href"
-        />
+            :icon-colour="mapStore.selectedPoint === item.location ? 'text-accent' : undefined"
+            @mouseenter="mapStore.selectedPoint = item.location ?? null"
+            @mouseleave="mapStore.selectedPoint = null"
+          />
         </div> -->
 
         <div class="divider" />
