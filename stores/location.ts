@@ -2,8 +2,10 @@ export const useLocationStore = defineStore("useLocationStore", () => {
   const { data, status, refresh } = useFetch("/api/locations", { lazy: true });
 
   const sidebarStore = useSidebarStore();
+  const mapStore = useMapStore();
 
-  watchEffect(() => {
+  // watchEffect(() => { // This causes hydration mismatch
+  effect(() => {
     if (data.value) {
       sidebarStore.loading = false;
 
@@ -12,6 +14,13 @@ export const useLocationStore = defineStore("useLocationStore", () => {
         label: location.name,
         icon: "tabler:map-pin-filled",
         href: "#",
+      }));
+
+      mapStore.mapPoints = data.value.map(location => ({
+        id: location.id,
+        label: location.name,
+        latitude: location.latitude,
+        longitude: location.longitude,
       }));
     }
 
