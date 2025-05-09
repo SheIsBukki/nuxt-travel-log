@@ -6,13 +6,9 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { InsertLocation } from "~/lib/db/schema";
 
 const { $csrfFetch } = useNuxtApp();
-
 const router = useRouter();
-
 const loading = ref(false);
-
 const submitted = ref(false);
-
 const submitError = ref("");
 
 const { handleSubmit, errors, meta, setErrors } = useForm({

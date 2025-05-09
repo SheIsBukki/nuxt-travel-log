@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  showLabel: boolean;
   label: string;
   href: string;
   icon: string;
+  showLabel: boolean;
+  iconColour?: "text-accent" | "text-primary" | "text-secondary";
 }>();
 
 const route = useRoute();
@@ -24,7 +25,11 @@ const route = useRoute();
         'justify-start': showLabel,
       }"
     >
-      <Icon :name="props.icon" size="24" />
+      <Icon
+        :name="props.icon"
+        size="24"
+        :class="iconColour"
+      />
       <Transition name="grow">
         <span v-if="showLabel" class="">{{ props.label }}</span>
       </Transition>
