@@ -3,6 +3,9 @@ import type { FetchError } from "ofetch";
 
 import { toTypedSchema } from "@vee-validate/zod";
 
+import type { NominatimResults } from "~/lib/types";
+
+import AddMessagingList from "~/components/add-messaging-list.vue";
 import { CENTRE_NIGERIA } from "~/lib/constants";
 import { InsertLocation } from "~/lib/db/schema";
 
@@ -44,7 +47,7 @@ const onSubmit = handleSubmit(async (values) => {
       setErrors(error.data.data);
     }
 
-    submitError.value = error.data?.statusMessage || error.statusMessage || "An unknown error occurred";
+    submitError.value = getFetchErrorMessage(error);
   }
 
   loading.value = false;
@@ -55,6 +58,20 @@ function formatNumber(value?: number) {
     return 0;
   return value.toFixed(5);
 }
+
+function searchResultSelected(result: NominatimResults) {
+  setFieldValue("name", result.display_name);
+  mapStore.addedPoint = {
+    id: 1,
+    name: "Added Point",
+    description: "",
+    latitude: Number(result.lat),
+    longitude: Number(result.lon),
+    centreMap: true,
+  };
+}
+
+const addMessaging = ["Drag the", "marker on the map", "Double click on the map", "Or search for a location below"];
 
 effect(() => {
   if (mapStore.addedPoint) {
@@ -128,16 +145,9 @@ onBeforeRouteLeave(() => {
         :error="errors.description"
       />
 
-      <p>
-        Drag the <Icon
-          name="tabler:map-pin-filled"
-          size="18"
-          class="text-warning"
-        /> marker to your desired location. Or double click on the map
-      </p>
-
+      <!-- Coordinates of the current location on the map -->
       <p class="text-xs text-gray-400">
-        Current location: {{ formatNumber(controlledValues.latitude) }}, {{ formatNumber(controlledValues.longitude) }}
+        Current coordinates: {{ formatNumber(controlledValues.latitude) }}, {{ formatNumber(controlledValues.longitude) }}
       </p>
 
       <!-- Submit and cancel buttons -->
@@ -168,6 +178,29 @@ onBeforeRouteLeave(() => {
           />
         </button>
       </div>
+
+      <div class="divider" />
+      <!-- Messaging telling the user how to find a location on the map -->
+      <div class="mt-[-18px]">
+        <p class="mb-1">
+          To set the coordinates:
+        </p>
+
+        <ul class="text-sm">
+          <AddMessagingList
+            :has-inner-icon="true"
+            :text="addMessaging[0]"
+            :additional-text="addMessaging[1]"
+          />
+          <div
+            v-for="text, index in addMessaging.slice(2)"
+            :key="index"
+          >
+            <AddMessagingList :text="text" />
+          </div>
+        </ul>
+      </div>
     </form>
+    <AppPlaceSearch @result-selected="searchResultSelected" />
   </div>
 </template>
