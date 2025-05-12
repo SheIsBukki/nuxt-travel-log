@@ -31,7 +31,7 @@ export const useMapStore = defineStore("useMapStore", () => {
         [firstPoint.longitude, firstPoint.latitude],
       ));
 
-      map.map?.fitBounds(bounds, { padding });
+      map.map?.fitBounds(bounds, { padding, maxZoom: 10 });
     });
 
     watch(addedPoint, (newValue, oldValue) => {

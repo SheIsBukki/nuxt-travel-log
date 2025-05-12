@@ -122,7 +122,7 @@ function setLocation(result: NominatimResults) {
             >
               Choose location
               <Icon
-                name="tabler:map-pin-plus"
+                name="tabler:map-pin-check"
                 size="18"
                 class="text-warning"
               />

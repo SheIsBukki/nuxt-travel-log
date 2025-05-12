@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { isPointSelected } from "~/utils/map-points";
+
 const isSidebarOpen = ref(true);
 const route = useRoute();
 const sidebarStore = useSidebarStore();
@@ -74,10 +76,10 @@ function toggleSidebar() {
           :show-label="isSidebarOpen"
           :label="item.label"
           :icon="item.icon"
-          :href="item.href"
+          :to="item.to"
 
-          :icon-colour="mapStore.selectedPoint === item.location ? 'text-accent' : undefined"
-          @mouseenter="mapStore.selectedPoint = item.location ?? null"
+          :icon-colour="isPointSelected(item.mapPoint, mapStore.selectedPoint) ? 'text-accent' : undefined"
+          @mouseenter="mapStore.selectedPoint = item.mapPoint ?? null"
           @mouseleave="mapStore.selectedPoint = null"
         />
 
