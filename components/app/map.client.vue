@@ -3,6 +3,7 @@ import type { MglEvent } from "@indoorequal/vue-maplibre-gl";
 import type { LngLat } from "maplibre-gl";
 
 import { CENTRE_NIGERIA } from "~/lib/constants";
+import { isPointSelected } from "~/utils/map-points";
 
 const mapStore = useMapStore();
 
@@ -71,14 +72,14 @@ onMounted(() => {
         <div
           :data-tip="point.name"
           class="tooltip tooltip-top hover:cursor-pointer"
-          :class="{ 'tooltip-open': mapStore.selectedPoint === point }"
+          :class="{ 'tooltip-open': isPointSelected(point, mapStore.selectedPoint) }"
           @mouseenter="mapStore.selectedPoint = point"
           @mouseleave="mapStore.selectedPoint = null"
         >
           <Icon
             name="tabler:map-pin-filled"
             size="30"
-            :class="mapStore.selectedPoint === point ? 'text-accent' : 'text-secondary'"
+            :class="isPointSelected(point, mapStore.selectedPoint) ? 'text-accent' : 'text-secondary'"
           />
         </div>
       </template>
@@ -90,6 +91,17 @@ onMounted(() => {
         <p v-if="point.description">
           {{ point.description }}
         </p>
+
+        <!-- Option to go to the dedication page of a location -->
+        <div class="flex mt-4">
+          <NuxtLink
+            v-if="point.to"
+            :to="point.to"
+            class="btn btn-sm btn-outline"
+          >
+            {{ point.toLabel }}
+          </NuxtLink>
+        </div>
       </MglPopup>
     </MglMarker>
   </MglMap>

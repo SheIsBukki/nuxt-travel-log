@@ -1,3 +1,7 @@
+import type { MapPoint } from "~/lib/types";
+
+import { createMapPointFromLocation } from "~/utils/map-points";
+
 export const useLocationStore = defineStore("useLocationStore", () => {
   const { data, status, refresh } = useFetch("/api/locations", { lazy: true });
 
@@ -7,23 +11,25 @@ export const useLocationStore = defineStore("useLocationStore", () => {
   // watchEffect(() => { // This causes hydration mismatch
   effect(() => {
     if (data.value) {
-      sidebarStore.loading = false;
+      const mapPoints: MapPoint[] = [];
+      const sidebarItems: SidebarItem[] = [];
 
-      sidebarStore.sidebarItems = data.value.map(location => ({
-        id: `location-${location.id}`,
-        label: location.name,
-        icon: "tabler:map-pin-filled",
-        href: "#",
-        location,
-      }));
+      data.value.forEach((location) => {
+        const mapPoint = createMapPointFromLocation(location);
 
-      mapStore.mapPoints = data.value.map(location => ({
-        id: location.id,
-        name: location.name,
-        description: location.description,
-        latitude: location.latitude,
-        longitude: location.longitude,
-      }));
+        sidebarItems.push({
+          id: `location-${location.id}`,
+          label: location.name,
+          icon: "tabler:map-pin-filled",
+          to: { name: "dashboard-location-slug", params: { slug: location.slug } },
+          mapPoint,
+        });
+
+        mapPoints.push(mapPoint);
+      });
+
+      sidebarStore.sidebarItems = sidebarItems;
+      mapStore.mapPoints = mapPoints;
     }
 
     sidebarStore.loading = status.value === "pending";

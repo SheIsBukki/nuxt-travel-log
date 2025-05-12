@@ -192,12 +192,12 @@ onBeforeRouteLeave(() => {
             :text="addMessaging[0]"
             :additional-text="addMessaging[1]"
           />
-          <div
+          <template
             v-for="text, index in addMessaging.slice(2)"
             :key="index"
           >
             <AddMessagingList :text="text" />
-          </div>
+          </template>
         </ul>
       </div>
     </form>
