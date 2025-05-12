@@ -7,11 +7,59 @@ const sidebarStore = useSidebarStore();
 const locationsStore = useLocationStore();
 const mapStore = useMapStore();
 
+const { currentLocation } = storeToRefs(locationsStore);
+
 onMounted(() => {
   isSidebarOpen.value = localStorage.getItem("isSidebarOpen") === "true";
-
   if (route.path !== "/dashboard") {
-    locationsStore.refresh();
+    locationsStore.refreshLocations();
+  }
+});
+
+effect(() => {
+  if (route.name === "dashboard") {
+    sidebarStore.sidebarTopItems = [
+      {
+        id: "link-dashboard",
+        label: "Locations",
+        href: "/dashboard",
+        icon: "tabler:map",
+      },
+      {
+        id: "link-location-add",
+        label: "Add Location",
+        href: "/dashboard/add",
+        icon: "tabler:circle-plus-filled",
+      },
+    ];
+  }
+  else if (route.name === "dashboard-location-slug") {
+    sidebarStore.sidebarTopItems = [
+      {
+        id: "link-dashboard",
+        label: "Back to Locations",
+        href: "/dashboard",
+        icon: "tabler:arrow-left",
+      },
+      {
+        id: "link-dashboard",
+        label: currentLocation.value ? currentLocation.value.name : "View Logs",
+        to: { name: "dashboard-location-slug", params: { slug: currentLocation.value?.slug } },
+        icon: "tabler:map",
+      },
+      {
+        id: "link-location-edit",
+        label: "Edit Location",
+        to: { name: "dashboard-location-slug-edit", params: { slug: currentLocation.value?.slug } },
+        icon: "tabler:map-pin-cog",
+      },
+      {
+        id: "link-location-add",
+        label: "Add Location Log",
+        to: { name: "dashboard-location-slug-add", params: { slug: currentLocation.value?.slug } },
+        icon: "tabler:circle-plus-filled",
+      },
+    ];
   }
 });
 
@@ -49,22 +97,28 @@ function toggleSidebar() {
 
       <div class="flex flex-col">
         <SidebarButton
+          v-for="item in sidebarStore.sidebarTopItems"
+          :key="item.id"
           :show-label="isSidebarOpen"
-          label="Locations"
-          href="/dashboard"
-          icon="tabler:map"
+          :label="item.label"
+          :href="item.href"
+          :to="item.to"
+          :icon="item.icon"
         />
 
-        <SidebarButton
+        <!-- <SidebarButton
           :show-label="isSidebarOpen"
           label="Add Location"
           href="/dashboard/add"
           icon="tabler:circle-plus-filled"
-        />
+        /> -->
 
-        <div v-if="sidebarStore.loading || sidebarStore.sidebarItems.length" class="divider" />
+        <div
+          v-if="sidebarStore.loading || sidebarStore.sidebarItems.length"
+          class="divider"
+        />
         <!-- Loading skeleton -->
-        <div v-if="sidebarStore.loading" class="px-4 ">
+        <div v-if="sidebarStore.loading" class="px-4">
           <div class="skeleton h-4 w-full" />
         </div>
 
@@ -77,8 +131,11 @@ function toggleSidebar() {
           :label="item.label"
           :icon="item.icon"
           :to="item.to"
-
-          :icon-colour="isPointSelected(item.mapPoint, mapStore.selectedPoint) ? 'text-accent' : undefined"
+          :icon-colour="
+            isPointSelected(item.mapPoint, mapStore.selectedPoint)
+              ? 'text-accent'
+              : undefined
+          "
           @mouseenter="mapStore.selectedPoint = item.mapPoint ?? null"
           @mouseleave="mapStore.selectedPoint = null"
         />
@@ -109,8 +166,11 @@ function toggleSidebar() {
       </div>
     </div>
 
-    <div class="flex-1  overflow-auto bg-base-200">
-      <div class="flex size-full" :class="{ 'flex-col ': route.path !== '/dashboard/add' }">
+    <div class="flex-1 overflow-auto bg-base-200">
+      <div
+        class="flex size-full"
+        :class="{ 'flex-col ': route.path !== '/dashboard/add' }"
+      >
         <NuxtPage />
         <AppMap class="flex-1" />
       </div>

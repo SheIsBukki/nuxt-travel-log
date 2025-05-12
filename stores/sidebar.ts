@@ -8,10 +8,12 @@ export type SidebarItem = { id: string; label: string; icon: string; href?: stri
 
 export const useSidebarStore = defineStore("useSidebarStore", () => {
   const sidebarItems = ref<SidebarItem[]>([]);
+  const sidebarTopItems = ref<SidebarItem[]>([]);
   const loading = ref(false);
 
   return {
     loading,
     sidebarItems,
+    sidebarTopItems,
   };
 });

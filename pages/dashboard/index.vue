@@ -2,12 +2,12 @@
 import { createMapPointFromLocation, isPointSelected } from "~/utils/map-points";
 
 const locationsStore = useLocationStore();
-const { locations, status } = storeToRefs(locationsStore);
+const { locations, locationStatus: status } = storeToRefs(locationsStore);
 
 const mapStore = useMapStore();
 
 onMounted(() => {
-  locationsStore.refresh();
+  locationsStore.refreshLocations();
 });
 </script>
 
