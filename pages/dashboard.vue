@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+import {
+  CURRENT_LOCATION_PAGES,
+  EDIT_PAGES,
+  LOCATION_PAGES,
+} from "~/lib/constants";
 import { isPointSelected } from "~/utils/map-points";
 
 const isSidebarOpen = ref(true);
@@ -7,17 +12,22 @@ const sidebarStore = useSidebarStore();
 const locationsStore = useLocationStore();
 const mapStore = useMapStore();
 
-const { currentLocation } = storeToRefs(locationsStore);
+const { currentLocation, currentLocationStatus } = storeToRefs(locationsStore);
+
+if (LOCATION_PAGES.has(route.name?.toString() || "")) {
+  await locationsStore.refreshLocations();
+}
+
+if (CURRENT_LOCATION_PAGES.has(route.name?.toString() || "")) {
+  await locationsStore.refreshCurrentLocation();
+}
 
 onMounted(() => {
   isSidebarOpen.value = localStorage.getItem("isSidebarOpen") === "true";
-  if (route.path !== "/dashboard") {
-    locationsStore.refreshLocations();
-  }
 });
 
 effect(() => {
-  if (route.name === "dashboard") {
+  if (LOCATION_PAGES.has(route.name?.toString() || "")) {
     sidebarStore.sidebarTopItems = [
       {
         id: "link-dashboard",
@@ -33,7 +43,7 @@ effect(() => {
       },
     ];
   }
-  else if (route.name === "dashboard-location-slug") {
+  else if (CURRENT_LOCATION_PAGES.has(route.name?.toString() || "")) {
     sidebarStore.sidebarTopItems = [
       {
         id: "link-dashboard",
@@ -41,25 +51,35 @@ effect(() => {
         href: "/dashboard",
         icon: "tabler:arrow-left",
       },
-      {
+    ];
+
+    if (currentLocation.value && currentLocationStatus.value !== "pending") {
+      sidebarStore.sidebarTopItems.push({
         id: "link-dashboard",
-        label: currentLocation.value ? currentLocation.value.name : "View Logs",
-        to: { name: "dashboard-location-slug", params: { slug: currentLocation.value?.slug } },
+        label: currentLocation.value.name,
+        to: {
+          name: "dashboard-location-slug",
+          params: { slug: route.params.slug },
+        },
         icon: "tabler:map",
-      },
-      {
+      }, {
         id: "link-location-edit",
         label: "Edit Location",
-        to: { name: "dashboard-location-slug-edit", params: { slug: currentLocation.value?.slug } },
+        to: {
+          name: "dashboard-location-slug-edit",
+          params: { slug: route.params.slug },
+        },
         icon: "tabler:map-pin-cog",
-      },
-      {
+      }, {
         id: "link-location-add",
         label: "Add Location Log",
-        to: { name: "dashboard-location-slug-add", params: { slug: currentLocation.value?.slug } },
+        to: {
+          name: "dashboard-location-slug-add",
+          params: { slug: route.params.slug },
+        },
         icon: "tabler:circle-plus-filled",
-      },
-    ];
+      });
+    }
   }
 });
 
@@ -95,6 +115,7 @@ function toggleSidebar() {
         />
       </div>
 
+      <!-- Sidebar top section -->
       <div class="flex flex-col">
         <SidebarButton
           v-for="item in sidebarStore.sidebarTopItems"
@@ -106,13 +127,6 @@ function toggleSidebar() {
           :icon="item.icon"
         />
 
-        <!-- <SidebarButton
-          :show-label="isSidebarOpen"
-          label="Add Location"
-          href="/dashboard/add"
-          icon="tabler:circle-plus-filled"
-        /> -->
-
         <div
           v-if="sidebarStore.loading || sidebarStore.sidebarItems.length"
           class="divider"
@@ -123,6 +137,7 @@ function toggleSidebar() {
         </div>
 
         <!-- I will use this in production if there's no padding  -->
+        <!-- Sidebar bottom section -->
         <SidebarButton
           v-for="item in sidebarStore.sidebarItems"
           v-else-if="sidebarStore.sidebarItems.length"
@@ -148,9 +163,11 @@ function toggleSidebar() {
             :show-label="isSidebarOpen"
             :label="item.label"
             :icon="item.icon"
-            :href="item.href"
+            :to="item.to"
 
-            :icon-colour="mapStore.selectedPoint === item.location ? 'text-accent' : undefined"
+            :icon-colour="isPointSelected(item.mapPoint, mapStore.selectedPoint)
+              ? 'text-accent'
+              : undefined"
             @mouseenter="mapStore.selectedPoint = item.location ?? null"
             @mouseleave="mapStore.selectedPoint = null"
           />
@@ -169,9 +186,14 @@ function toggleSidebar() {
     <div class="flex-1 overflow-auto bg-base-200">
       <div
         class="flex size-full"
-        :class="{ 'flex-col ': route.path !== '/dashboard/add' }"
+        :class="{ 'flex-col ': !EDIT_PAGES.has(route.name?.toString() || '') }"
       >
-        <NuxtPage />
+        <NuxtPage
+          :class="{
+            'w-96 ': EDIT_PAGES.has(route.name?.toString() || ''),
+            'shrink-0': EDIT_PAGES.has(route.name?.toString() || ''),
+          }"
+        />
         <AppMap class="flex-1" />
       </div>
     </div>

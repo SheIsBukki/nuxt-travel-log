@@ -5,3 +5,17 @@ export const CENTRE_USA = [-98.5795, 39.8283] as LngLatLike;
 
 // My choice
 export const CENTRE_NIGERIA = [9.81601, 8.03955] as LngLatLike;
+
+export const LOCATION_PAGES = new Set(["dashboard", "dashboard-add"]);
+
+export const CURRENT_LOCATION_PAGES = new Set([
+  "dashboard-location-slug",
+  "dashboard-location-slug-edit",
+  "dashboard-location-slug-add",
+]);
+
+export const EDIT_PAGES = new Set([
+  "dashboard-add",
+  "dashboard-location-slug-edit",
+  "dashboard-location-slug-add",
+]);
