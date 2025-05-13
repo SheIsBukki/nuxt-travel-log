@@ -23,7 +23,10 @@ export async function findLocation(slug: string, userId: number) {
   });
 }
 
-export async function findLocationByName(existing: InsertLocation, userId: number) {
+export async function findLocationByName(
+  existing: InsertLocation,
+  userId: number,
+) {
   return db.query.location.findFirst({
     where: and(eq(location.name, existing.name), eq(location.userId, userId)),
   });
@@ -52,12 +55,33 @@ export async function findUniqueSlug(slug: string) {
   return slug;
 }
 
-export async function insertLocation(insertable: InsertLocation, slug: string, userId: number) {
-  const [createdLocation] = await db.insert(location).values({
-    ...insertable,
-    slug,
-    userId,
-  }).returning();
+export async function insertLocation(
+  insertable: InsertLocation,
+  slug: string,
+  userId: number,
+) {
+  const [createdLocation] = await db
+    .insert(location)
+    .values({
+      ...insertable,
+      slug,
+      userId,
+    })
+    .returning();
 
   return createdLocation;
+}
+
+export async function updateLocationBySlug(
+  updates: InsertLocation,
+  slug: string,
+  userId: number,
+) {
+  const [updatedLocation] = await db
+    .update(location)
+    .set(updates)
+    .where(and(eq(location.slug, slug), eq(location.userId, userId)))
+    .returning();
+
+  return updatedLocation;
 }

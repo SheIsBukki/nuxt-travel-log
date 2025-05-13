@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   hasInnerIcon?: boolean;
-  additionalText?: string;
+  textAfterIcon?: string;
   text: string;
 }>();
 </script>
@@ -16,6 +16,6 @@ const props = defineProps<{
       size="18"
       class="text-warning"
     />
-    {{ props.additionalText }}
+    {{ props.textAfterIcon }}
   </li>
 </template>
