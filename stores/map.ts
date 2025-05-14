@@ -5,7 +5,7 @@ import type { MapPoint } from "~/lib/types";
 export const useMapStore = defineStore("useMapStore", () => {
   const mapPoints = ref<MapPoint[]>([]);
   const selectedPoint = ref<MapPoint | null>(null);
-  const addedPoint = ref<MapPoint & { centreMap?: boolean } | null>(null);
+  const addedPoint = ref<MapPoint & { centreMap?: boolean; zoom?: number } | null>(null);
 
   // Dynamically initialise maplibre-gl and vue-maplibre-gl, and this init function will only get called on the client-side inside of the map component——map.client.vue
   async function init() {
@@ -39,7 +39,7 @@ export const useMapStore = defineStore("useMapStore", () => {
         map.map?.flyTo({
           center: [newValue.longitude, newValue.latitude],
           speed: 0.8,
-          zoom: 6,
+          zoom: newValue.zoom || 6,
         });
       }
     }, { immediate: true });
