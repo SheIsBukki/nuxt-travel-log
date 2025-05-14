@@ -66,7 +66,6 @@ onBeforeRouteUpdate((to) => {
           && location
           && !loading
       "
-      class=""
     >
       <h2 class="text-xl">
         {{ location.name }}
@@ -116,7 +115,7 @@ onBeforeRouteUpdate((to) => {
 
     <!-- Location Logs -->
     <div
-      v-if="route.name === 'dashboard-location-slug' && location?.locationLogs.length"
+      v-if="route.name === 'dashboard-location-slug' && !loading && location?.locationLogs.length"
       class="location-list"
     >
       <LocationCard
