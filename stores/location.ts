@@ -61,11 +61,40 @@ export const useLocationStore = defineStore("useLocationStore", () => {
       currentLocation.value
       && CURRENT_LOCATION_PAGES.has(route.name?.toString() || "")
     ) {
-      sidebarStore.sidebarItems = [];
-      mapStore.mapPoints = [currentLocation.value];
+      const mapPoints: MapPoint[] = [];
+      const sidebarItems: SidebarItem[] = [];
+
+      currentLocation.value.locationLogs.forEach((log) => {
+        const mapPoint = createMapPointFromLocationLog(log);
+
+        sidebarItems.push({
+          id: `location-log-${log.id}`,
+          label: log.name,
+          icon: "tabler:map-pin-filled",
+          to: {
+            name: "dashboard-location-slug-id",
+            params: { id: log.id },
+          },
+          mapPoint,
+        });
+
+        mapPoints.push(mapPoint);
+      });
+
+      sidebarStore.sidebarItems = sidebarItems;
+      if (mapPoints.length) {
+        mapStore.mapPoints = mapPoints;
+      }
+      else {
+        mapStore.mapPoints = [currentLocation.value];
+      }
     }
 
-    sidebarStore.loading = locationStatus.value === "pending";
+    sidebarStore.loading = locationStatus.value === "pending" || currentLocationStatus.value === "pending";
+
+    if (sidebarStore.loading) {
+      mapStore.mapPoints = [];
+    }
   });
 
   return {
