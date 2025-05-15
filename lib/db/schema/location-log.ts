@@ -3,7 +3,12 @@ import { int, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { DescriptionSchema, LatitudeSchema, LongitudeSchema, NameSchema } from "~/lib/zod-schemas";
+import {
+  DescriptionSchema,
+  LatitudeSchema,
+  LongitudeSchema,
+  NameSchema,
+} from "~/lib/zod-schemas";
 
 import { user } from "./auth";
 import { location } from "./location";
@@ -49,18 +54,31 @@ export const InsertLocationLog = createInsertSchema(locationLog, {
   description: DescriptionSchema,
   latitude: LatitudeSchema,
   longitude: LongitudeSchema,
-}).omit({
-  id: true,
-  userId: true,
-  locationId: true,
-  createdAt: true,
-  updatedAt: true,
-}).superRefine((values, context) => {
-  if (values.startedAt > values.endedAt || values.endedAt < values.startedAt) {
-    context.addIssue({ code: z.ZodIssueCode.custom, message: "Start Date must be before End Date", path: ["startedAt"] });
-    context.addIssue({ code: z.ZodIssueCode.custom, message: "End Date must be after Start Date", path: ["endedAt"] });
-  }
-});
+})
+  .omit({
+    id: true,
+    userId: true,
+    locationId: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .superRefine((values, context) => {
+    if (
+      values.startedAt > values.endedAt
+      || values.endedAt < values.startedAt
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Start Date must be before End Date",
+        path: ["startedAt"],
+      });
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "End Date must be after Start Date",
+        path: ["endedAt"],
+      });
+    }
+  });
 
 export type SelectLocationLog = typeof locationLog.$inferSelect;
 export type InsertLocationLog = z.infer<typeof InsertLocationLog>;

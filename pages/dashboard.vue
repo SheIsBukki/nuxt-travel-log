@@ -96,6 +96,22 @@ effect(() => {
           params: { slug: route.params.slug },
         },
         icon: "tabler:arrow-left",
+      }, {
+        id: "link-edit-location-log",
+        label: "View Log",
+        to: {
+          name: "dashboard-location-slug-id",
+          params: { slug: route.params.slug, id: route.params.id },
+        },
+        icon: "tabler:map-pin",
+      }, {
+        id: "link-edit-location-log",
+        label: "Edit Log",
+        to: {
+          name: "dashboard-location-slug-id-edit",
+          params: { slug: route.params.slug, id: route.params.id },
+        },
+        icon: "tabler:map-pin-cog",
       }];
     }
   }

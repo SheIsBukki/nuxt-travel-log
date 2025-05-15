@@ -18,6 +18,7 @@ export const EDIT_PAGES = new Set([
   "dashboard-add",
   "dashboard-location-slug-edit",
   "dashboard-location-slug-add",
+  "dashboard-location-slug-id-edit",
 ]);
 
 export const CURRENT_LOCATION_LOG_PAGES = new Set([
