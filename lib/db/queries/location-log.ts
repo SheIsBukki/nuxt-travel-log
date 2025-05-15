@@ -25,3 +25,17 @@ export async function findLocationLog(id: number, userId: number) {
 
   return foundLog;
 }
+
+export async function updateLocationLog(
+  locationLogId: number,
+  updatable: InsertLocationLog,
+  userId: number,
+) {
+  const [updatedLog] = await db
+    .update(locationLog)
+    .set({ ...updatable })
+    .where(and(eq(locationLog.id, locationLogId), eq(locationLog.userId, userId)))
+    .returning();
+
+  return updatedLog;
+}
