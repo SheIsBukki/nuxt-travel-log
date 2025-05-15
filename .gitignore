@@ -29,3 +29,6 @@ local.db*
 # editor settings
 .zed
 .sublime-project
+
+# docker
+docker-data
