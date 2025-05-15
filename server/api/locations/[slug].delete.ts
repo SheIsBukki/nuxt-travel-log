@@ -3,10 +3,9 @@ import defineAuthenticatedEventHandler from "~/utils/define-authenticated-event-
 
 export default defineAuthenticatedEventHandler(async (event) => {
   const slug = getRouterParam(event, "slug") as string;
+  const locationToDelete = await removeLocationBySlug(slug, event.context.user.id);
 
-  const deletedLocation = await removeLocationBySlug(slug, event.context.user.id);
-
-  if (!deletedLocation) {
+  if (!locationToDelete) {
     return sendError(event, createError({
       statusCode: 404,
       statusMessage: "Location could not be deleted",
