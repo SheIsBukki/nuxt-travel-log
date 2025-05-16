@@ -10,8 +10,11 @@ import {
   NameSchema,
 } from "~/lib/zod-schemas";
 
+import type { SelectLocationLogWithImage } from "./location-log-image";
+
 import { user } from "./auth";
 import { location } from "./location";
+import { locationLogImage } from "./location-log-image";
 
 export const locationLog = sqliteTable("locationLog", {
   id: int().primaryKey({ autoIncrement: true }),
@@ -41,11 +44,12 @@ export const locationLog = sqliteTable("locationLog", {
 });
 
 // One-to-many relationship from the POV of the many
-export const locationLogRelations = relations(locationLog, ({ one }) => ({
+export const locationLogRelations = relations(locationLog, ({ one, many }) => ({
   location: one(location, {
     fields: [locationLog.locationId],
     references: [location.id],
   }),
+  images: many(locationLogImage), // this means each location log can have multiple images
 }));
 
 // Zod validated schema
@@ -82,3 +86,4 @@ export const InsertLocationLog = createInsertSchema(locationLog, {
 
 export type SelectLocationLog = typeof locationLog.$inferSelect;
 export type InsertLocationLog = z.infer<typeof InsertLocationLog>;
+export type SelectLocationLogWithImages = SelectLocationLog & { images: SelectLocationLogWithImage[] };
