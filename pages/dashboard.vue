@@ -97,7 +97,7 @@ effect(() => {
         },
         icon: "tabler:arrow-left",
       }, {
-        id: "link-edit-location-log",
+        id: "link-view-location-log",
         label: "View Log",
         to: {
           name: "dashboard-location-slug-id",
@@ -112,6 +112,14 @@ effect(() => {
           params: { slug: route.params.slug, id: route.params.id },
         },
         icon: "tabler:map-pin-cog",
+      }, {
+        id: "link-location-log-images",
+        label: "Manage Images",
+        to: {
+          name: "dashboard-location-slug-id-images",
+          params: { slug: route.params.slug, id: route.params.id },
+        },
+        icon: "tabler:photo-cog",
       }];
     }
   }
@@ -160,6 +168,11 @@ function toggleSidebar() {
           :to="item.to"
           :icon="item.icon"
         />
+        <!-- Instructor's repo has this, I will comment this out if at the end of the project, the instructor didn't do anything that warrants adding this; meaning he already did and I missed it -->
+
+        <!-- <div v-if="route.path.startsWith('/dashboard/location') && currentLocationStatus === 'pending'" class="flex items-center justify-center">
+          <div class="loading" />
+        </div> -->
 
         <div
           v-if="sidebarStore.loading || sidebarStore.sidebarItems.length"
@@ -202,7 +215,7 @@ function toggleSidebar() {
             :icon-colour="isPointSelected(item.mapPoint, mapStore.selectedPoint)
               ? 'text-accent'
               : undefined"
-            @mouseenter="mapStore.selectedPoint = item.location ?? null"
+            @mouseenter="mapStore.selectedPoint = item.mapPoint ?? null"
             @mouseleave="mapStore.selectedPoint = null"
           />
         </div> -->
