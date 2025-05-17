@@ -10,7 +10,7 @@ import {
   NameSchema,
 } from "~/lib/zod-schemas";
 
-import type { SelectLocationLogWithImage } from "./location-log-image";
+import type { SelectLocationLogImage } from "./location-log-image";
 
 import { user } from "./auth";
 import { location } from "./location";
@@ -86,4 +86,4 @@ export const InsertLocationLog = createInsertSchema(locationLog, {
 
 export type SelectLocationLog = typeof locationLog.$inferSelect;
 export type InsertLocationLog = z.infer<typeof InsertLocationLog>;
-export type SelectLocationLogWithImages = SelectLocationLog & { images: SelectLocationLogWithImage[] };
+export type SelectLocationLogWithImages = SelectLocationLog & { images: SelectLocationLogImage[] };
