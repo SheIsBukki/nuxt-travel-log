@@ -13,10 +13,10 @@ export const locationLogImage = sqliteTable("locationLogImage", {
 
   locationLogId: int()
     .notNull()
-    .references(() => locationLog.id),
+    .references(() => locationLog.id, { onDelete: "cascade" }),
   userId: int()
     .notNull()
-    .references(() => user.id),
+    .references(() => user.id, { onDelete: "cascade" }),
 
   createdAt: int()
     .notNull()
@@ -34,7 +34,9 @@ export const locationLogImageRelations = relations(locationLogImage, ({ one }) =
   }),
 }));
 
-// Key regex explanation: the key should start with one or more digits——the userId, followed by a slash, another one or more digits——the location log id, followed by a slash, then a UUID with 32 characters broken into 8 characters, 4 characters three times, and 12 characters. and it ends in .jpg because that's the format we defined for the S3 bucket. If it doesnt match this pattern, the error message will be "Invalid key"
+/**
+ *  Key regex explanation: the key should start with one or more digits——the userId, followed by a slash, another one or more digits——the location log id, followed by a slash, then a UUID with 32 characters broken into 8 characters, 4 characters three times, and 12 characters. and it ends in .jpg because that's the format we defined for the S3 bucket. If it doesnt match this pattern, the error message will be "Invalid key"
+ */
 export const InsertLocationLogImage = createInsertSchema(locationLogImage, {
   key: field => field.regex(/^\d+\/\d+\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\.jpg$/, "Invalid key"),
 }).omit({

@@ -10,6 +10,11 @@ const props = defineProps<{
 
 const { handleBlur, value: inputValue, handleChange } = useField<number>(props.name, { initialValues: props.value });
 
+// To ensure that the date is in the user's timezone
+function formatDateISO(value: number) {
+  return new Date(value).toISOString().split("T")[0];
+}
+
 function dateChanged(event: Event) {
   const target = event.target as HTMLInputElement;
   handleChange(new Date(target.value).getTime());
@@ -30,7 +35,7 @@ function dateChanged(event: Event) {
       :class="{
         'input-error': props.error,
       }"
-      :value="formatDate(inputValue)"
+      :value="formatDateISO(inputValue)"
       @change="dateChanged"
       @blur="handleBlur"
     >

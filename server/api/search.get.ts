@@ -18,14 +18,14 @@ export default defineAuthenticatedEventHandler(defineCachedEventHandler(async (e
     });
 
     if (!response.ok) {
-      return sendError(event, createError({ statusCode: 504, statusMessage: "Unable to reach search API" }));
+      throw createError({ statusCode: 504, statusMessage: "Unable to reach search API" });
     }
 
     const results = await response.json() as NominatimResults[];
     return results;
   }
   catch {
-    return sendError(event, createError({ statusCode: 504, statusMessage: "Unable to reach search API" }));
+    throw createError({ statusCode: 504, statusMessage: "Unable to reach search API" });
   }
 }, {
   maxAge: 60 * 60 * 24,

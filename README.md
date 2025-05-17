@@ -4,6 +4,12 @@ A full-stack app built with Nuxt that allows users to keep track of all the plac
 
 ## Setup
 
+Create a `.env` file and update with your values:
+
+```sh
+cp .env.example .env
+```
+
 Make sure to install dependencies: I'm using pnpm
 
 ```bash
