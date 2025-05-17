@@ -10,28 +10,28 @@ export default defineAuthenticatedEventHandler(async (event) => {
   const location = await findLocation(slug, event.context.user.id);
 
   if (!location) {
-    return sendError(event, createError({
+    throw createError({
       statusCode: 404,
       statusMessage: "Location could not be found",
-    }));
+    });
   }
 
   const id = getRouterParam(event, "id") as string;
 
   if (!z.coerce.number().safeParse(id).success) {
-    return sendError(event, createError({
+    throw createError({
       statusCode: 422,
       statusMessage: "Invalid id",
-    }));
+    });
   }
 
   const locationLogToDelete = await deleteLocationLog(Number(id), event.context.user.id);
 
   if (!locationLogToDelete) {
-    return sendError(event, createError({
+    throw createError({
       statusCode: 404,
       statusMessage: "Location log not found.",
-    }));
+    });
   }
 
   setResponseStatus(event, 204);

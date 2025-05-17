@@ -6,10 +6,10 @@ export default defineAuthenticatedEventHandler(async (event) => {
   const locationToDelete = await removeLocationBySlug(slug, event.context.user.id);
 
   if (!locationToDelete) {
-    return sendError(event, createError({
+    throw createError({
       statusCode: 404,
       statusMessage: "Location could not be deleted",
-    }));
+    });
   }
   setResponseStatus(event, 204);
 });

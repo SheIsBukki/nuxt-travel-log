@@ -12,10 +12,10 @@ export default function defineAuthenticatedEventHandler<T>(handler: (event: Auth
   return defineEventHandler(async (event) => {
     // If the user is not logged in, they can't do stuff
     if (!event.context.user) {
-      return sendError(event, createError({
+      throw createError({
         statusCode: 401,
         statusMessage: "Unauthorised",
-      }));
+      });
     }
 
     return handler(event as AuthenticatedEvent);
