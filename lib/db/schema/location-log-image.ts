@@ -46,4 +46,4 @@ export const InsertLocationLogImage = createInsertSchema(locationLogImage, {
 });
 
 export type InsertLocationLogImage = z.infer<typeof InsertLocationLogImage>;
-export type SelectLocationLogWithImage = typeof locationLogImage.$inferInsert;
+export type SelectLocationLogImage = typeof locationLogImage.$inferInsert;

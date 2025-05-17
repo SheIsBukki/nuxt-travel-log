@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { SelectLocationLogWithImage } from "~/lib/db/schema";
+import type { SelectLocationLogImage } from "~/lib/db/schema";
 
-defineProps<{ images: SelectLocationLogWithImage[] }>();
+defineProps<{ images: SelectLocationLogImage[] }>();
 
 const config = useRuntimeConfig();
 </script>
@@ -19,6 +19,9 @@ const config = useRuntimeConfig();
           alt=""
           class="size-full object-cover"
         >
+
+        <!-- Delete button -->
+        <slot :image />
       </div>
     </div>
   </div>
